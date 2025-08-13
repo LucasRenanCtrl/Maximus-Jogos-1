@@ -1,3 +1,5 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -67,10 +69,29 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = true;
         }
-        else
+        else if (moveInput > 0)
         {
             spriteRenderer.flipX = false;
         }
+        MirrorChildren();
+    }
+
+    private void MirrorChildren()
+    {
+        foreach (var child in transform.GetComponentsInChildren<Transform>())
+        {
+            if (child == transform) continue;
+
+            Quaternion newRotation = Quaternion.identity;
+
+            if (spriteRenderer.flipX)
+            {
+                newRotation = Quaternion.Euler(180f * Vector3.up);
+            }
+
+            child.rotation = newRotation;
+        }
+
     }
 
     // Verifica se o jogador está no chão (não é a melhor forma de fazer isso)
